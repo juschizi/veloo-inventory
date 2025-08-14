@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Veloo Public API v1 — Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        code,
+        pre {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        pre {
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #1e40af;
+        }
+
+        .endpoint {
+            background: #f0f7ff;
+            padding: 10px;
+            border-left: 4px solid #1e40af;
+            margin-bottom: 1rem;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <h1>Veloo Public API v1</h1>
+    <p>Welcome to the Veloo API. This is a <strong>read-only</strong> API for retrieving store and inventory data.</p>
+
+    <h2>Authentication</h2>
+    <p>All requests must include your API key in the request header:</p>
+    <pre>
+X-API-Key: YOUR_TOKEN_HERE
+</pre>
+
+    <h2>Base URL</h2>
+    <pre>https://yourdomain.com/api/v1/</pre>
+
+    <h2>Endpoints</h2>
+
+    <div class="endpoint">
+        <h3>1. List Stores</h3>
+        <pre>GET /stores</pre>
+        <p>Returns a list of all active stores.</p>
+        <strong>Optional Query Params:</strong>
+        <ul>
+            <li><code>q</code> — Search by store name</li>
+            <li><code>limit</code> — Max results (default 50)</li>
+        </ul>
+        <strong>Example:</strong>
+        <pre>
+curl -H "X-API-Key: YOUR_TOKEN_HERE" \
+     https://yourdomain.com/api/v1/stores?q=gwarinpa
+</pre>
+    </div>
+
+    <div class="endpoint">
+        <h3>2. Store Inventory</h3>
+        <pre>GET /stores/{store_id}/items</pre>
+        <p>Returns inventory items for the given store.</p>
+        <strong>Optional Query Params:</strong>
+        <ul>
+            <li><code>q</code> — Search by name or brand</li>
+            <li><code>in_stock</code> — 1 or 0</li>
+            <li><code>low_stock_only</code> — 1 to filter only low stock items</li>
+        </ul>
+        <strong>Example:</strong>
+        <pre>
+curl -H "X-API-Key: YOUR_TOKEN_HERE" \
+     https://yourdomain.com/api/v1/stores/12/items?in_stock=1
+</pre>
+    </div>
+
+    <div class="endpoint">
+        <h3>3. Single Item Details</h3>
+        <pre>GET /items/{item_id}</pre>
+        <p>Returns details for one inventory item.</p>
+        <strong>Example:</strong>
+        <pre>
+curl -H "X-API-Key: YOUR_TOKEN_HERE" \
+     https://yourdomain.com/api/v1/items/45
+</pre>
+    </div>
+
+    <h2>Response Format</h2>
+    <p>All responses are in JSON.</p>
+    <pre>
+{
+    "success": true,
+    "data": [
+        { "id": 1, "name": "Product A", "price": 1200 }
+    ]
+}
+</pre>
+
+    <h2>Rate Limits</h2>
+    <p>Default: 60 requests/minute per API key.</p>
+
+    <h2>Errors</h2>
+    <ul>
+        <li>401 Unauthorized — Missing/invalid API key</li>
+        <li>404 Not Found — Resource doesn’t exist</li>
+        <li>429 Too Many Requests — Rate limit exceeded</li>
+    </ul>
+
+</body>
+
+</html>
