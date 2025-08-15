@@ -58,7 +58,7 @@ if (!isset($_SESSION['admin_id'])) {
       </a>
       <a href="pharmacies-dashboard.php" class="main-card">
         <div class="icon">💊</div>
-        <h2>Pharmacies</h2>
+        <h2>Pharmacieswww</h2>
         <p>Manage drug inventory, prescriptions, and pharmacy orders</p>
       </a>
     </div>
