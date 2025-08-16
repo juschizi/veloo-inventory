@@ -38,9 +38,20 @@ if (!$store) {
     exit;
 }
 
-// --- Categories for the select ---
-$categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+// --- Get store type ---
+$typeStmt = $pdo->prepare("SELECT type FROM stores WHERE id = ?");
+$typeStmt->execute([$store_id]);
+$storeType = $typeStmt->fetchColumn();
 
+if (!$storeType) {
+    header('Location: dashboard.php?msg=Invalid%20store%20type');
+    exit;
+}
+
+// --- Fetch only categories matching store type ---
+$catStmt = $pdo->prepare("SELECT id, name FROM categories WHERE type = ? ORDER BY name");
+$catStmt->execute([$storeType]);
+$categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 // --- Current admin (for top chip, optional) ---
 $meStmt = $pdo->prepare("SELECT name, role FROM admins WHERE id = ?");
 $meStmt->execute([$_SESSION['admin_id']]);

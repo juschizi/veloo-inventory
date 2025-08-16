@@ -16,7 +16,20 @@ $st->execute([$store_id]);
 $store = $st->fetch(PDO::FETCH_ASSOC);
 if (!$store || $store['type'] !== 'pharmacy') { header('Location: pharmacies-dashboard.php'); exit; }
 
-$categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+// --- Get store type ---
+$typeStmt = $pdo->prepare("SELECT type FROM stores WHERE id = ?");
+$typeStmt->execute([$store_id]); // or $pharmacy_id if that’s the variable name
+$storeType = $typeStmt->fetchColumn();
+
+if (!$storeType) {
+    header('Location: dashboard.php?msg=Invalid%20store%20type');
+    exit;
+}
+
+// --- Fetch only categories matching store type ---
+$catStmt = $pdo->prepare("SELECT id, name FROM categories WHERE type = ? ORDER BY name");
+$catStmt->execute([$storeType]);
+$categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html>

@@ -11,12 +11,23 @@ if (!$item_id || !$store_id) { header('Location: dashboard.php'); exit; }
 
 assertStoreAccess($pdo, $store_id);
 
+/** Load the item (not deleted) */
 $it = $pdo->prepare("SELECT * FROM items WHERE id = ? AND store_id = ? AND is_deleted = 0");
 $it->execute([$item_id, $store_id]);
 $item = $it->fetch();
 if (!$item) { header("Location: inventory.php?store_id=$store_id"); exit; }
 
-$categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll();
+/** Get the store + its type so we can filter categories */
+$st = $pdo->prepare("SELECT id, name, type FROM stores WHERE id = ? AND is_active = 1 AND is_deleted = 0");
+$st->execute([$store_id]);
+$store = $st->fetch();
+if (!$store) { header('Location: dashboard.php'); exit; }
+$storeType = $store['type'];  // 'store' | 'pharmacy'
+
+/** Fetch ONLY categories for this store type */
+$catStmt = $pdo->prepare("SELECT id, name FROM categories WHERE type = ? ORDER BY name");
+$catStmt->execute([$storeType]);
+$categories = $catStmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html>
