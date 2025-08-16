@@ -72,6 +72,8 @@ $isAdmin = (($currentAdmin['role'] ?? 'staff') === 'admin');
     .store-head { display:flex; align-items:center; gap:.6rem; }
     .store-logo { width:40px; height:40px; border-radius:10px; object-fit:cover; background:#eef2ff; }
   </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 </head>
 <body>
 <div class="app">

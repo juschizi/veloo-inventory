@@ -37,6 +37,8 @@ $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="utf-8">
   <title>Add Drug — <?= htmlspecialchars($store['name']) ?></title>
   <link rel="stylesheet" href="assets/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 </head>
 <body>
   <div class="container-narrow">

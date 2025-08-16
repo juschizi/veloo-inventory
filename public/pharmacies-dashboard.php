@@ -67,8 +67,29 @@ $out_of_stock = (int)$pdo->query("
   <script>
     document.addEventListener('DOMContentLoaded', () => { feather.replace(); });
   </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 </head>
 <body>
+<header>
+<!-- In your top bar / header (visible on mobile), e.g. above <main> -->
+<button class="menu-toggle" aria-label="Open menu">
+  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<button class="sidebar-close" aria-label="Close menu">
+  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </svg>
+</button>
+  
+
+
+<!-- Immediately inside <body>, before or after .app is fine -->
+<div class="backdrop" hidden></div>
+  </header>
 <div class="app">
 
   <!-- Sidebar -->
@@ -146,4 +167,28 @@ $out_of_stock = (int)$pdo->query("
 
 </div>
 </body>
+
+<script>
+const sidebar  = document.querySelector('.sidebar');
+const openBtn  = document.querySelector('.menu-toggle');
+const closeBtn = document.querySelector('.sidebar-close');
+const backdrop = document.querySelector('.backdrop');
+
+openBtn.addEventListener('click', () => {
+  sidebar.classList.add('open');
+  backdrop.classList.add('show');
+});
+
+closeBtn.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('show');
+});
+
+backdrop.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('show');
+});
+
+</script>
+
 </html>

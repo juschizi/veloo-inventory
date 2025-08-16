@@ -29,8 +29,30 @@ $store = $storeStmt->fetch(PDO::FETCH_ASSOC);
 if (!$store) { header('Location: dashboard.php'); exit; }
 $isPharmacy = ($store['type'] === 'pharmacy');
 
+
+// Get store type ('store' | 'pharmacy') and then load only matching categories
+$typeStmt = $pdo->prepare("SELECT type FROM stores WHERE id = ?");
+$typeStmt->execute([$store_id]);
+$storeType = $typeStmt->fetchColumn();
+if (!$storeType) { header('Location: dashboard.php?msg=Invalid%20store'); exit; }
+
+$catStmt = $pdo->prepare("SELECT id, name FROM categories WHERE type = ? ORDER BY name");
+$catStmt->execute([$storeType]);
+$categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Guard: if user passed a category_id from the other type, ignore it
+$cat_filter = (int)($_GET['category_id'] ?? 0);
+if ($cat_filter) {
+  $chk = $pdo->prepare("SELECT type FROM categories WHERE id=?");
+  $chk->execute([$cat_filter]);
+  $catType = $chk->fetchColumn();
+  if ($catType !== $storeType) {
+    $cat_filter = 0; // neutralize invalid filter
+  }
+}
+
 // 4) Filters
-$categories   = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+
 $q            = trim($_GET['q'] ?? '');
 $cat_filter   = (int)($_GET['category_id'] ?? 0);
 $stock_filter = $_GET['stock'] ?? '';         // '', 'in', 'low', 'out'
@@ -102,8 +124,29 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     .pharm-meta span { margin-right:6px; }
     @media (max-width: 900px){ .search-row{ grid-template-columns:1fr; } }
   </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 </head>
 <body>
+  <header>
+<!-- In your top bar / header (visible on mobile), e.g. above <main> -->
+<button class="menu-toggle" aria-label="Open menu">
+  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<button class="sidebar-close" aria-label="Close menu">
+  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </svg>
+</button>
+  
+
+
+<!-- Immediately inside <body>, before or after .app is fine -->
+<div class="backdrop" hidden></div>
+  </header>
 <div class="app">
 
   <!-- Sidebar -->
@@ -170,12 +213,15 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <form class="search-row" method="GET" action="inventory.php">
       <input type="hidden" name="store_id" value="<?= $store['id'] ?>">
       <input class="input" type="text" name="q" placeholder="Search name, brand, generic…" value="<?= htmlspecialchars($q) ?>">
-      <select class="input" name="category_id">
-        <option value="">All Categories</option>
-        <?php foreach ($categories as $cat): ?>
-          <option value="<?= $cat['id'] ?>" <?= $cat_filter == $cat['id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
-        <?php endforeach; ?>
-      </select>
+     <select class="input" name="category_id">
+  <option value="">All Categories</option>
+  <?php foreach ($categories as $cat): ?>
+    <option value="<?= $cat['id'] ?>" <?= $cat_filter == $cat['id'] ? 'selected' : '' ?>>
+      <?= htmlspecialchars($cat['name']) ?>
+    </option>
+  <?php endforeach; ?>
+</select>
+
       <select class="input" name="stock">
         <option value="">All Stock</option>
         <option value="in"  <?= $stock_filter === 'in'  ? 'selected' : '' ?>>In Stock</option>
@@ -269,5 +315,27 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!-- Feather icons (CDN + auto-init) -->
 <script src="https://unpkg.com/feather-icons" onload="feather.replace()"></script>
+<script>
+const sidebar  = document.querySelector('.sidebar');
+const openBtn  = document.querySelector('.menu-toggle');
+const closeBtn = document.querySelector('.sidebar-close');
+const backdrop = document.querySelector('.backdrop');
+
+openBtn.addEventListener('click', () => {
+  sidebar.classList.add('open');
+  backdrop.classList.add('show');
+});
+
+closeBtn.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('show');
+});
+
+backdrop.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('show');
+});
+
+</script>
 </body>
 </html>

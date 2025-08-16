@@ -465,3 +465,68 @@ input[type="file"] {
     width: 18px;
     height: 18px;
 }
+
+/* Sidebar base */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    /* Hidden by default */
+    width: 260px;
+    height: 100%;
+    background: #f8fafc;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 1001;
+    padding: 1rem;
+}
+
+/* Sidebar when open */
+.sidebar.open {
+    left: 0;
+}
+
+/* Close button: hidden by default */
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1002;
+}
+
+/* Show close button only when sidebar is open */
+.sidebar.open .sidebar-close {
+    display: block;
+}
+
+/* Backdrop (overlay) */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: none;
+}
+
+.backdrop.show {
+    display: block;
+}
+
+/* Desktop: sidebar always visible, no toggle/close needed */
+@media (min-width: 768px) {
+    .sidebar {
+        position: relative;
+        left: 0;
+        box-shadow: none;
+    }
+
+    .sidebar-close,
+    .menu-toggle,
+    .backdrop {
+        display: none !important;
+    }
+}
