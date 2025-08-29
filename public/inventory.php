@@ -269,7 +269,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
           ?>
           <div class="<?= $cardClass ?>">
-            <img class="thumb" src="<?= $it['image_url'] ?: 'assets/default-store.png' ?>" alt="">
+            <img class="thumb" src="<?= $it['image_url'] ?: 'assets/item.png' ?>" alt="">
             <div style="flex:1">
               <div style="display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
                 <div style="font-weight:600"><?= htmlspecialchars($it['name']) ?></div>

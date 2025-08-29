@@ -101,7 +101,7 @@ $isAdmin = (($currentAdmin['role'] ?? 'staff') === 'admin');
   <main class="main">
     <div class="page-head">
       <div class="store-head">
-        <img class="store-logo" src="<?= $store['logo_url'] ?: 'assets/default-store.png' ?>" alt="">
+        <img class="store-logo" src="<?= $store['logo_url'] ?: 'assets/items.png' ?>" alt="">
         <h2 class="form-title" style="margin:0;">Add Inventory — <?= htmlspecialchars($store['name']) ?></h2>
       </div>
       <div class="controls">

@@ -154,7 +154,7 @@ $out_of_stock = (int)$pdo->query("
       <div class="store-grid">
         <?php foreach ($pharmacies as $p): ?>
           <a class="store-card" href="inventory.php?store_id=<?= $p['id'] ?>">
-            <img class="store-logo" src="<?= $p['logo_url'] ?: 'assets/default-store.png' ?>" alt="">
+            <img class="store-logo" src="<?= $p['logo_url'] ?: 'assets/items.png' ?>" alt="">
             <div>
               <div style="font-weight:600;"><?= htmlspecialchars($p['name']) ?></div>
               <div style="color:var(--muted); font-size:.9rem;">View inventory →</div>
